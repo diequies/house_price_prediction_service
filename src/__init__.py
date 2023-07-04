@@ -2,4 +2,7 @@
 
 import sys
 
+import pymysql
+
 sys.path.append("./src")
+pymysql.install_as_MySQLdb()

@@ -4,13 +4,12 @@ dependencies:
 	@echo "Initializing Git..."
 	git init
 	@echo "Installing dependencies..."
-	curl -sSL https://install.python-poetry.org | python3 -
 	poetry install
 	poetry run pre-commit install
 
 env: dependencies
 	@echo "Activating virtual environment..."
-	source $(poetry env info --path)/bin/activate
+	poetry shell
 
 tests:
 	pytest tests/

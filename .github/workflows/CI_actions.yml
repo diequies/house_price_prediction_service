@@ -28,7 +28,7 @@ jobs:
           python -m poetry install
       - name: Install flake8
         run: |
-          poetry flake8
+          poetry add flake8
       - name: Lint
         run: make lint
       - name: Testing

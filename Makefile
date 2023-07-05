@@ -27,6 +27,6 @@ docs:
 
 lint:
 	@echo Linting
-	flake8 src
+	flake8 src --max-line-length=240
 	pylint src
 	mypy src

@@ -12,7 +12,7 @@ env: dependencies
 	poetry shell
 
 tests:
-	pytest
+	pytest tests/
 
 clean:
 	@echo Remove cache files

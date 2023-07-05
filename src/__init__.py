@@ -1,5 +1,4 @@
 """Source code of your project"""
-
 import sys
 
 import pymysql

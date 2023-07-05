@@ -10,7 +10,7 @@ dependencies:
 
 env: dependencies
 	@echo "Activating virtual environment..."
-	poetry shell
+	source $(poetry env info --path)/bin/activate
 
 tests:
 	pytest tests/

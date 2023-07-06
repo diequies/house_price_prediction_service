@@ -33,10 +33,10 @@ jobs:
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: poetry install --no-interaction --no-root
       - name: Install project
-        run: poetry install --no-interaction
-      - uses: ricardochaves/python-lint@v1.4.0
         run: |
+          poetry install --no-interaction
           source .venv/bin/activate
+      - uses: ricardochaves/python-lint@v1.4.0
         with:
           python-root-list: "src"
           use-pylint: true

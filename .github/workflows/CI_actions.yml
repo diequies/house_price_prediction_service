@@ -23,7 +23,7 @@ jobs:
           python -m pip install poetry==1.5.1
       - name: Configure poetry
         run: |
-          python -m poetry config virtualenvs.in-project true
+          python -m poetry config virtualenvs.in-project false
       - name: Install dependencies
         run: |
           python -m poetry install

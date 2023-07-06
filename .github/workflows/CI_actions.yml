@@ -35,6 +35,8 @@ jobs:
       - name: Install project
         run: poetry install --no-interaction
       - uses: ricardochaves/python-lint@v1.4.0
+        run: |
+          source .venv/bin/activate
         with:
           python-root-list: "src"
           use-pylint: true
@@ -43,5 +45,15 @@ jobs:
           extra-pylint-options: ""
           extra-flake8-options: "--max-line-length=88"
           extra-mypy-options: ""
+      - name: Run flake8
+        uses: py-actions/flake8@v2
+        with:
+          path: "src"
+          max-line-length: "88"
+      - name: Run PyLint
+        run: |
+          source .venv/bin/activate
+          pip install pylint
+          pylint src --continue-on-error: false
       - name: Testing
         run: make tests

@@ -41,6 +41,7 @@ jobs:
           max-line-length: "88"
       - name: Run PyLint
         run: |
+          source .venv/bin/activate
           pip install pylint
           pylint src
           continue-on-error: false

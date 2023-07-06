@@ -30,6 +30,10 @@ jobs:
         uses: py-actions/flake8@v2
         with:
           path: "src"
-          max-line-length: "70"
+          max-line-length: "88"
+      - name: Run PyLint
+        run: |
+          pylint src
+          continue-on-error: false
       - name: Testing
         run: make tests

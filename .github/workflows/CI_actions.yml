@@ -33,6 +33,7 @@ jobs:
           max-line-length: "88"
       - name: Run PyLint
         run: |
+          pip install pylint
           pylint src
           continue-on-error: false
       - name: Testing

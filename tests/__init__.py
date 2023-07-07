@@ -1,4 +1,4 @@
-# Avoid ModuleNotFoundError
+"""Source code of your project"""
 
 import sys
 

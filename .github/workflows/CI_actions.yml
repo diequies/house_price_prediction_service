@@ -44,12 +44,13 @@ jobs:
           source .venv/bin/activate
           pip install pylint
           pylint src
-      - name: Install mypy
-        run: pip install mypy
+          pylint tests
       - name: Run mypy
-        uses: sasanquaneuf/mypy-github-action@releases/v1
-        with:
-          checkName: 'build'
+        run: |
+          source .venv/bin/activate
+          pip install mypy
+          mypy src
+          mypy tests
       - name: Testing
         run: |
           source .venv/bin/activate

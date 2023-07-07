@@ -2,4 +2,6 @@
 
 
 def test_dummy():
-    assert 1 == 1
+    """Test that always is true"""
+    calculation = 2 + 2
+    assert calculation == 4

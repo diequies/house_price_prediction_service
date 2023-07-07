@@ -2524,6 +2524,17 @@ slack = ["slack-sdk"]
 telegram = ["requests"]
 
 [[package]]
+name = "types-pymysql"
+version = "1.1.0.0"
+description = "Typing stubs for PyMySQL"
+optional = false
+python-versions = "*"
+files = [
+    {file = "types-PyMySQL-1.1.0.0.tar.gz", hash = "sha256:e350c8920455eb5cb3f8a65fd95a1350340e396f6f1451f0fe1d035240929969"},
+    {file = "types_PyMySQL-1.1.0.0-py3-none-any.whl", hash = "sha256:cbd0c123a8116f7b99970a7c663399bb3b4bb9d97b8f843909c5cc27abea064f"},
+]
+
+[[package]]
 name = "typing-extensions"
 version = "4.7.1"
 description = "Backported and Experimental Type Hints for Python 3.7+"
@@ -2769,4 +2780,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "7100be8b1afa164bd12a04d4941b90fd7d294bd6b59fff454a0cc85b4243b642"
+content-hash = "01223f48b01577401889d56a96efaab344886ff7aecdd04a6e445ae3300a6740"

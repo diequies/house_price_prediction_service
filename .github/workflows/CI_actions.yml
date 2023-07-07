@@ -42,6 +42,7 @@ jobs:
       - name: Run PyLint
         run: |
           source .venv/bin/activate
+          pip install pylint
           pylint src
       - name: Testing
         run: make tests

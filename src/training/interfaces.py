@@ -35,6 +35,8 @@ class TrainingBase(ABC):
     Defines the general contract for the training classes
     """
 
+
+
     @abstractmethod
     def __init__(
         self,

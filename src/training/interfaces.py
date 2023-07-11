@@ -40,7 +40,7 @@ class TrainingBase(ABC):
         self,
         input_variables: List[str],
         model: PredictorBase,
-        config: Dict[str: Union[str, int, float]],
+        config: Dict[str : Union[str, int, float]],
     ) -> None:
         """
         Constructor for the training class
@@ -69,7 +69,8 @@ class TrainingBase(ABC):
         """
         Method to separate the train and test data appropriately
         :param processed_df: DataFrame containing the processed data
-        :return: a tuple of DataFrames, the first for training data and the second for validation
+        :return: a tuple of DataFrames, the first for training data and the second for
+        validation
         """
         pass
 

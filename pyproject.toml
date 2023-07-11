@@ -25,6 +25,9 @@ pre-commit = "^2.17.0"
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
+[tool.flake8]
+extend-ignore = "E203"
+
 [tool.ruff]
 ignore = ["E501"]
 select = ["B","C","E","F","W","B9", "I", "N", "Q"]

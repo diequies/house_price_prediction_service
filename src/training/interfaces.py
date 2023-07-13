@@ -18,7 +18,6 @@ class PredictorBase(ABC):
         :param x_train: Processed data to use to train the model
         :param y_train: Target feature
         """
-        pass
 
     @abstractmethod
     def predict(self, x_predict: DataFrame) -> Series:
@@ -27,7 +26,6 @@ class PredictorBase(ABC):
         :param x_predict: Data to use to predict
         :return: Predictions
         """
-        pass
 
 
 class TrainingBase(ABC):

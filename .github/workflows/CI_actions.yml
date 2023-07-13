@@ -39,7 +39,7 @@ jobs:
         with:
           path: "src"
           max-line-length: "88"
-          ignore: ["E203"]
+          ignore: "E203"
       - name: Run PyLint
         run: |
           source .venv/bin/activate

@@ -38,7 +38,7 @@ class TrainingBase(ABC):
         self,
         input_variables: List[str],
         model: PredictorBase,
-        config: Dict[str : Union[str, int, float]],
+        config: Dict[str, Union[str, int, float]],
     ) -> None:
         """
         Constructor for the training class

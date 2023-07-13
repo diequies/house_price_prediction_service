@@ -48,7 +48,6 @@ jobs:
       - name: Run mypy
         run: |
           source .venv/bin/activate
-          pip install mypy
           mypy src
           mypy tests
       - name: Testing

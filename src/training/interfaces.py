@@ -21,10 +21,10 @@ class PredictorBase(ABC):
         pass
 
     @abstractmethod
-    def predict(self, x: DataFrame) -> Series:
+    def predict(self, x_predict: DataFrame) -> Series:
         """
         Method to predict using a trained model
-        :param x: Data to use to predict
+        :param x_predict: Data to use to predict
         :return: Predictions
         """
         pass
@@ -48,21 +48,18 @@ class TrainingBase(ABC):
         :param model: Model to use for training
         :param config: Configuration dictionary, containing setup information
         """
-        pass
 
     @abstractmethod
     def _load_data(self) -> None:
         """
         Loads the data from the necessary data sources
         """
-        pass
 
     @abstractmethod
     def _process_data(self) -> None:
         """
         Gets the raw data and process it to be used by the model
         """
-        pass
 
     @abstractmethod
     def _train_test_split(self, processed_df: DataFrame) -> Tuple[DataFrame, DataFrame]:
@@ -72,21 +69,18 @@ class TrainingBase(ABC):
         :return: a tuple of DataFrames, the first for training data and the second for
         validation
         """
-        pass
 
     @abstractmethod
     def _fit_predictor(self) -> None:
         """
         Method to fit the model
         """
-        pass
 
     @abstractmethod
     def run_training(self) -> None:
         """
         Method to run the whole training process
         """
-        pass
 
     @abstractmethod
     def save_model(self, path: str) -> None:
@@ -94,4 +88,3 @@ class TrainingBase(ABC):
         Method to store the model in a specific location
         :param path: address to the location
         """
-        pass

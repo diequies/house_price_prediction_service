@@ -20,7 +20,7 @@ class PredictorBase(ABC):
         """
 
     @abstractmethod
-    def predict(self, x_predict: DataFrame) -> Series:
+    def predict(self, x_predict: DataFrame) -> List:
         """
         Method to predict using a trained model
         :param x_predict: Data to use to predict

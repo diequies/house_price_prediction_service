@@ -43,11 +43,13 @@ jobs:
       - name: Run PyLint
         run: |
           source .venv/bin/activate
+          pip install pylint
           pylint src
           pylint tests
       - name: Run mypy
         run: |
           source .venv/bin/activate
+          pip install mypy
           mypy src
           mypy tests
       - name: Testing

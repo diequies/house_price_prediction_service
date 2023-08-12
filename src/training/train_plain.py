@@ -55,7 +55,7 @@ class TrainingManagerPlain(TrainingBase):
         :param processed_data: the processed data to divide
         :return: the tuple of both datasets
         """
-        # FIXME: Temporal code to pass checks # [fixme]
+        # FIXME: Temporal code to pass checks # pylint: disable=W0511
         return processed_data, processed_data
 
     def _fit_predictor(self) -> None:

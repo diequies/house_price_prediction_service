@@ -60,3 +60,7 @@ line-length = 88
 
 [tool.ruff.mccabe]
 max-complexity = 10
+
+[[tool.mypy.overrides]]
+module = ["sklearn"]
+ignore_missing_imports = true

@@ -47,10 +47,14 @@ class TrainingBase(ABC):
         :param config: Configuration dictionary, containing setup information
         """
 
+    @staticmethod
     @abstractmethod
-    def _load_data(self) -> None:
+    def _load_data(data_path: str, filename: str) -> DataFrame:
         """
         Loads the data from the necessary data sources
+        :param data_path: path to the data folder
+        :param filename: name of the file containing the data
+        :return: DataFrame with the raw data
         """
 
     @abstractmethod
@@ -59,13 +63,11 @@ class TrainingBase(ABC):
         Gets the raw data and process it to be used by the model
         """
 
+    @staticmethod
     @abstractmethod
-    def _train_test_split(self, processed_df: DataFrame) -> Tuple[DataFrame, DataFrame]:
+    def _train_test_split(processed_data: DataFrame) -> Tuple[DataFrame, DataFrame]:
         """
         Method to separate the train and test data appropriately
-        :param processed_df: DataFrame containing the processed data
-        :return: a tuple of DataFrames, the first for training data and the second for
-        validation
         """
 
     @abstractmethod

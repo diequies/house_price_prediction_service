@@ -29,7 +29,7 @@ class TrainingManagerPlain(TrainingBase):
         self.raw_data = self._load_data(
             data_path=CONFIG["data_path"], filename=CONFIG["data_filename"]
         )
-        self.processed_data = None
+        self.processed_data = pd.DataFrame()
 
     @staticmethod
     def _load_data(data_path: str, filename: str) -> DataFrame:

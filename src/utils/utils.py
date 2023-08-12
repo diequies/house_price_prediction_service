@@ -11,4 +11,6 @@ MYSQL_DETAILS = {
 
 COLUMNS_TO_LOAD = ["listing_id", "price", "floor_m_sqrt"]
 
+CONFIG = {"data_path": "../../data/raw/", "data_filename": "dummy_data"}
+
 MODEL_TRAINING_TIME_WINDOW_IN_SECONDS = 60 * 60 * 24 * 365

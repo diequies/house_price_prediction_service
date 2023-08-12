@@ -1,7 +1,7 @@
 """ Interfaces to define general contracts """
 
 from abc import ABC, abstractmethod
-from typing import Dict, List, Tuple, Union
+from typing import List, Tuple
 
 from pandas import DataFrame, Series
 
@@ -38,13 +38,11 @@ class TrainingBase(ABC):
         self,
         input_variables: List[str],
         model: PredictorBase,
-        config: Dict[str, Union[str, int, float]],
     ) -> None:
         """
         Constructor for the training class
         :param input_variables: list of features to include in the model training
         :param model: Model to use for training
-        :param config: Configuration dictionary, containing setup information
         """
 
     @staticmethod

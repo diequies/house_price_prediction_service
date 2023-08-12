@@ -1,12 +1,12 @@
 """ Training class to train basic models """
-from typing import Dict, List, Tuple, Union
+from typing import List, Tuple
 
 import pandas as pd
 from pandas import DataFrame
 
 from src.models.linear_regression import LinearRegressionPredictor
 from src.training.interfaces import PredictorBase, TrainingBase
-from src.utils.utils import COLUMNS_TO_LOAD
+from src.utils.utils import COLUMNS_TO_LOAD, CONFIG
 
 
 class TrainingManagerPlain(TrainingBase):
@@ -18,18 +18,16 @@ class TrainingManagerPlain(TrainingBase):
         self,
         input_variables: List[str],
         model: PredictorBase,
-        config: Dict[str, Union[str, int, float]],
     ):
         """
         Constructor for the training manager class
         :param input_variables: list of features to include in the model training
         :param model: Model to use for training
-        :param config: Configuration dictionary, containing setup information
         """
         self.input_variables = input_variables
         self.model = model
         self.raw_data = self._load_data(
-            data_path=config["data_path"], filename=config["data_filename"]
+            data_path=CONFIG["data_path"], filename=CONFIG["data_filename"]
         )
         self.processed_data = None
 
@@ -68,12 +66,10 @@ def run() -> None:
     """
     Main method to run the training manager
     """
-    config = {"data_path": "../../data/raw/", "data_filename": "dummy_data"}
 
     training_manager = TrainingManagerPlain(
         input_variables=COLUMNS_TO_LOAD,
         model=LinearRegressionPredictor(fit_intercept=True),
-        config=config,
     )
 
     training_manager.run_training()

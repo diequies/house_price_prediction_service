@@ -31,6 +31,7 @@ class TrainingManagerPlain(TrainingBase):
         self.raw_data = self._load_data(
             data_path=config["data_path"], filename=config["data_filename"]
         )
+        self.processed_data = None
 
     @staticmethod
     def _load_data(data_path: str, filename: str) -> DataFrame:
@@ -76,7 +77,7 @@ def run() -> None:
     )
 
     training_manager.run_training()
-    training_manager.save_model()
+    training_manager.save_model(path="path")
 
 
 if __name__ == "__main__":

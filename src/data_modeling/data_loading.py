@@ -10,7 +10,12 @@ from sqlalchemy import text
 
 from src.utils.db_utils import get_mysql_connection
 from src.utils.exceptions import NotAllInputsAvailableError
-from src.utils.utils import DATA_TO_LOAD_MAP, MYSQL_DETAILS, TARGET_FEATURE
+from src.utils.utils import (
+    DATA_TO_LOAD_MAP,
+    DAYS_OF_DATA_TO_LOAD,
+    MYSQL_DETAILS,
+    TARGET_FEATURE,
+)
 
 
 def load_mysql_house_details(input_variables: List[str]) -> DataFrame:
@@ -30,13 +35,12 @@ def load_mysql_house_details(input_variables: List[str]) -> DataFrame:
     set_columns_to_load = set(itertools.chain.from_iterable(columns_to_load))
 
     time_now = int(datetime.utcnow().timestamp())
-    # number_of_days = CONFIG.get("days_of_data", 180)
 
     query = (
         f"SELECT {', '.join(list(set_columns_to_load))} "
         f"FROM houses_details "
         f"WHERE publish_unix_time >= "
-        f"{time_now - 180 * 60 * 60 * 24}"
+        f"{time_now - DAYS_OF_DATA_TO_LOAD * 60 * 60 * 24}"
     )
 
     with connection.connect() as conn:

@@ -47,11 +47,9 @@ class TrainingBase(ABC):
 
     @staticmethod
     @abstractmethod
-    def _load_data(data_path: str, filename: str) -> DataFrame:
+    def _load_data() -> DataFrame:
         """
         Loads the data from the necessary data sources
-        :param data_path: path to the data folder
-        :param filename: name of the file containing the data
         :return: DataFrame with the raw data
         """
 

@@ -6,7 +6,7 @@ from pandas import DataFrame, Series
 
 from src.models.linear_regression import LinearRegressionPredictor
 from src.training.interfaces import PredictorBase, TrainingBase
-from src.utils.utils import COLUMNS_TO_LOAD, CONFIG, INPUT_FEATURES, TARGET_FEATURE
+from src.utils.utils import CONFIG, INPUT_FEATURES, TARGET_FEATURE
 
 
 class TrainingManagerPlain(TrainingBase):
@@ -26,21 +26,16 @@ class TrainingManagerPlain(TrainingBase):
         """
         self.input_variables = input_variables
         self.model = model
-        self.raw_data = self._load_data(
-            data_path=CONFIG["data_path"], filename=CONFIG["data_filename"]
-        )
+        self.raw_data = self._load_data()
         self.processed_data = pd.DataFrame()
 
     @staticmethod
-    def _load_data(data_path: str, filename: str) -> DataFrame:
+    def _load_data() -> DataFrame:
         """
         Loads the data from the necessary data sources
-        :param data_path: path to the data folder
-        :param filename: name of the file containing the data
         :return: DataFrame with the raw data
         """
-        print(f"Reading {filename} from {data_path}")
-        return pd.read_csv(f"{data_path}/{filename}", usecols=COLUMNS_TO_LOAD)
+        return pd.DataFrame()
 
     def _process_data(self) -> None:
         """

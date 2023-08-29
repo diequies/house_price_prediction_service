@@ -2,11 +2,11 @@
 from typing import List, Tuple
 
 import pandas as pd
-from pandas import DataFrame
+from pandas import DataFrame, Series
 
 from src.models.linear_regression import LinearRegressionPredictor
 from src.training.interfaces import PredictorBase, TrainingBase
-from src.utils.utils import COLUMNS_TO_LOAD, CONFIG
+from src.utils.utils import COLUMNS_TO_LOAD, CONFIG, INPUT_FEATURES, TARGET_FEATURE
 
 
 class TrainingManagerPlain(TrainingBase):
@@ -40,29 +40,50 @@ class TrainingManagerPlain(TrainingBase):
         :return: DataFrame with the raw data
         """
         print(f"Reading {filename} from {data_path}")
-        return pd.read_csv(f"{data_path}/{filename}")
+        return pd.read_csv(f"{data_path}/{filename}", usecols=COLUMNS_TO_LOAD)
 
     def _process_data(self) -> None:
         """
         Method to process the raw data
         """
-        self.processed_data = self.raw_data
+
+        self.processed_data = self.raw_data.dropna()
 
     @staticmethod
     def _train_test_split(processed_data: DataFrame) -> Tuple[DataFrame, DataFrame]:
         """
         Divide the data into train and testing datasets
         :param processed_data: the processed data to divide
-        :return: the tuple of both datasets
+        :return: the tuple of both, train and test datasets
         """
-        # FIXME: Temporal code to pass checks # pylint: disable=W0511
-        return processed_data, processed_data
 
-    def _fit_predictor(self) -> None:
-        pass
+        idx_train = int(CONFIG["train_test_split"] * processed_data.shape[0])
+        train_data = processed_data.iloc[:idx_train, :]
+        test_data = processed_data.iloc[idx_train:, :]
+        return train_data, test_data
+
+    def _fit_predictor(self, x_train: DataFrame, y_train: Series) -> None:
+        """
+        Method to fit the model with the processed data
+        :param x_train: data to be used for training
+        :param y_train: target feature to train the model
+        """
+
+        self.model.fit(x_train=x_train, y_train=y_train)
 
     def run_training(self) -> None:
-        pass
+        """
+        Main method to run the model training
+        """
+
+        self._process_data()
+
+        train_data, test_data = self._train_test_split(self.processed_data)
+
+        x_train = train_data[self.input_variables]
+        y_train = train_data[TARGET_FEATURE]
+
+        self._fit_predictor(x_train=x_train, y_train=y_train)
 
     def save_model(self, path: str) -> None:
         pass
@@ -74,7 +95,7 @@ def run() -> None:
     """
 
     training_manager = TrainingManagerPlain(
-        input_variables=COLUMNS_TO_LOAD,
+        input_variables=INPUT_FEATURES,
         model=LinearRegressionPredictor(fit_intercept=True),
     )
 

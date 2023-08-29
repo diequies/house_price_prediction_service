@@ -69,9 +69,11 @@ class TrainingBase(ABC):
         """
 
     @abstractmethod
-    def _fit_predictor(self) -> None:
+    def _fit_predictor(self, x_train: DataFrame, y_train: Series) -> None:
         """
         Method to fit the model
+        :param x_train: data to be used for training
+        :param y_train: target feature to train the model
         """
 
     @abstractmethod

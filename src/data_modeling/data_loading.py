@@ -24,12 +24,12 @@ def load_mysql_house_details(input_variables: List[str]) -> DataFrame:
         value for key, value in DATA_TO_LOAD_MAP.items() if key in input_variables
     ]
 
-    columns_to_load = set(itertools.chain.from_iterable(columns_to_load))
+    set_columns_to_load = set(itertools.chain.from_iterable(columns_to_load))
 
     time_now = int(time.time())
 
     query = (
-        f"SELECT {', '.join(list(columns_to_load))} "
+        f"SELECT {', '.join(list(set_columns_to_load))} "
         f"FROM houses_details"
         f"WHERE publish_unix_time >= "
         f"{time_now - int(CONFIG.get('days_of_data', 180)) * 60 * 60 * 24}"

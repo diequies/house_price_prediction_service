@@ -43,8 +43,7 @@ def load_mysql_house_details(input_variables: List[str]) -> DataFrame:
         f"{time_now - DAYS_OF_DATA_TO_LOAD * 60 * 60 * 24}"
     )
 
-    with connection.connect() as conn:
-        raw_data = pd.read_sql(text(query), con=conn)
+    raw_data = pd.read_sql(text(query), con=connection.connect())
 
     if not set_columns_to_load.issubset(set(raw_data.columns)):
         raise NotAllInputsAvailableError("Please review the input data")

@@ -16,6 +16,7 @@ def test_not_all_columns_available(mocker):
     mocker.patch(
         "pandas.read_sql", return_value=pd.DataFrame(columns=wrong_input_features)
     )
+    mocker.patch("sqlalchemy.create_engine", return_value="")
 
     with pytest.raises(NotAllInputsAvailableError):
         load_mysql_house_details(input_variables=input_features)

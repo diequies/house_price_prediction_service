@@ -2,7 +2,7 @@
 from typing import List, Tuple
 
 import pandas as pd
-from pandas import DataFrame, Series
+from pandas import DataFrame
 
 from src.data_modeling.data_loading import load_mysql_house_details
 from src.models.linear_regression import LinearRegressionPredictor
@@ -58,7 +58,7 @@ class TrainingManagerPlain(TrainingBase):
         test_data = processed_data.iloc[idx_train:, :]
         return train_data, test_data
 
-    def _fit_predictor(self, x_train: DataFrame, y_train: Series) -> None:
+    def _fit_predictor(self, x_train: DataFrame, y_train: DataFrame) -> None:
         """
         Method to fit the model with the processed data
         :param x_train: data to be used for training

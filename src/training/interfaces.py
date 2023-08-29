@@ -3,7 +3,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Tuple
 
-from pandas import DataFrame, Series
+from pandas import DataFrame
 
 
 class PredictorBase(ABC):
@@ -12,7 +12,7 @@ class PredictorBase(ABC):
     """
 
     @abstractmethod
-    def fit(self, x_train: DataFrame, y_train: Series) -> None:
+    def fit(self, x_train: DataFrame, y_train: DataFrame) -> None:
         """
         Method to train the model
         :param x_train: Processed data to use to train the model
@@ -66,7 +66,7 @@ class TrainingBase(ABC):
         """
 
     @abstractmethod
-    def _fit_predictor(self, x_train: DataFrame, y_train: Series) -> None:
+    def _fit_predictor(self, x_train: DataFrame, y_train: DataFrame) -> None:
         """
         Method to fit the model
         :param x_train: data to be used for training

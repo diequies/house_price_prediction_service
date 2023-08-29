@@ -3,7 +3,7 @@
 from typing import List
 
 import pandas as pd
-from pandas import DataFrame, Series
+from pandas import DataFrame
 from sklearn.linear_model import LinearRegression
 
 from src.training.interfaces import PredictorBase
@@ -21,7 +21,7 @@ class LinearRegressionPredictor(PredictorBase):
         """
         self.model = LinearRegression(fit_intercept=fit_intercept)
 
-    def fit(self, x_train: DataFrame, y_train: Series) -> None:
+    def fit(self, x_train: DataFrame, y_train: DataFrame) -> None:
         """
         Trains the linear regression model
         :param x_train: Processed data to use to train the model

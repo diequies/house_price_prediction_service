@@ -24,6 +24,7 @@ TARGET_FEATURE = ["price"]
 CONFIG = {
     "data_path": "../../data/raw",
     "data_filename": "dummy_data.csv",
+    "days_of_data": 180,
     "train_test_split": 0.95,
 }
 

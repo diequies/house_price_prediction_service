@@ -35,6 +35,7 @@ class TrainingManagerPlain(TrainingBase):
         Loads the data from the necessary data sources
         :return: DataFrame with the raw data
         """
+        print("Loading data")
         return pd.DataFrame()
 
     def _process_data(self) -> None:

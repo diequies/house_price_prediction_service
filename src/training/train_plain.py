@@ -36,9 +36,6 @@ class TrainingManagerPlain(TrainingBase):
         :return: DataFrame with the raw data
         """
         print("Loading data")
-        # raw_data = load_mysql_house_details(self.input_variables)
-
-        # if not set(self.input_variables).issubset(set(raw_data.columns)):
 
         return load_mysql_house_details(self.input_variables)
 

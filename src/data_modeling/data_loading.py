@@ -9,6 +9,7 @@ from pandas import DataFrame
 from sqlalchemy import text
 
 from src.utils.db_utils import get_mysql_connection
+from src.utils.exceptions import NotAllInputsAvailableError
 from src.utils.utils import CONFIG, DATA_TO_LOAD_MAP, MYSQL_DETAILS
 
 
@@ -37,6 +38,9 @@ def load_mysql_house_details(input_variables: List[str]) -> DataFrame:
 
     with connection.connect() as conn:
         raw_data = pd.read_sql(text(query), con=conn)
+
+    if not set_columns_to_load.issubset(set(raw_data.columns)):
+        raise NotAllInputsAvailableError("Please review the input data")
 
     return raw_data
 

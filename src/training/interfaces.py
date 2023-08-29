@@ -45,9 +45,8 @@ class TrainingBase(ABC):
         :param model: Model to use for training
         """
 
-    @staticmethod
     @abstractmethod
-    def _load_data() -> DataFrame:
+    def _load_data(self) -> DataFrame:
         """
         Loads the data from the necessary data sources
         :return: DataFrame with the raw data

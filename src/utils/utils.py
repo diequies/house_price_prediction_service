@@ -11,6 +11,12 @@ MYSQL_DETAILS = {
 
 COLUMNS_TO_LOAD = ["listing_id", "price", "floor_m_sqrt"]
 
+DATA_TO_LOAD_MAP = {
+    "listing_id": ["listing_id"],
+    "price": ["price"],
+    "floor_m_sqrt": ["floor_m_sqrt"],
+}
+
 INPUT_FEATURES = ["listing_id", "floor_m_sqrt"]
 
 TARGET_FEATURE = ["price"]

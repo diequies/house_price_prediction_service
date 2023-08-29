@@ -78,7 +78,7 @@ class TrainingManagerPlain(TrainingBase):
 
         self._process_data()
 
-        train_data, test_data = self._train_test_split(self.processed_data)
+        train_data, _ = self._train_test_split(self.processed_data)
 
         x_train = train_data[self.input_variables]
         y_train = train_data[TARGET_FEATURE]

@@ -52,7 +52,7 @@ class TrainingManagerPlain(TrainingBase):
         :return: the tuple of both, train and test datasets
         """
 
-        idx_train = int(CONFIG["train_test_split"] * processed_data.shape[0])
+        idx_train = int(CONFIG.get("train_test_split", 0.95) * processed_data.shape[0])
         train_data = processed_data.iloc[:idx_train, :]
         test_data = processed_data.iloc[idx_train:, :]
         return train_data, test_data

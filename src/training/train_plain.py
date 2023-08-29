@@ -36,7 +36,6 @@ class TrainingManagerPlain(TrainingBase):
         :return: DataFrame with the raw data
         """
         print("Loading data")
-
         return load_mysql_house_details(self.input_variables)
 
     def _process_data(self) -> None:

@@ -10,7 +10,7 @@ from sqlalchemy import text
 
 from src.utils.db_utils import get_mysql_connection
 from src.utils.exceptions import NotAllInputsAvailableError
-from src.utils.utils import CONFIG, DATA_TO_LOAD_MAP, MYSQL_DETAILS
+from src.utils.utils import CONFIG, DATA_TO_LOAD_MAP, MYSQL_DETAILS, TARGET_FEATURE
 
 
 def load_mysql_house_details(input_variables: List[str]) -> DataFrame:
@@ -21,17 +21,19 @@ def load_mysql_house_details(input_variables: List[str]) -> DataFrame:
 
     connection = get_mysql_connection(schema=MYSQL_DETAILS["schema"])
 
+    inputs_required = input_variables + TARGET_FEATURE
+
     columns_to_load = [
-        value for key, value in DATA_TO_LOAD_MAP.items() if key in input_variables
+        value for key, value in DATA_TO_LOAD_MAP.items() if key in inputs_required
     ]
 
     set_columns_to_load = set(itertools.chain.from_iterable(columns_to_load))
 
-    time_now = datetime.utcnow().timestamp()
+    time_now = int(datetime.utcnow().timestamp())
 
     query = (
         f"SELECT {', '.join(list(set_columns_to_load))} "
-        f"FROM houses_details"
+        f"FROM houses_details "
         f"WHERE publish_unix_time >= "
         f"{time_now - CONFIG.get('days_of_data', 180) * 60 * 60 * 24}"
     )

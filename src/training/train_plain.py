@@ -6,7 +6,7 @@ from pandas import DataFrame, Series
 
 from src.models.linear_regression import LinearRegressionPredictor
 from src.training.interfaces import PredictorBase, TrainingBase
-from src.utils.utils import CONFIG, INPUT_FEATURES, TARGET_FEATURE
+from src.utils.utils import INPUT_FEATURES, TARGET_FEATURE
 
 
 class TrainingManagerPlain(TrainingBase):
@@ -52,9 +52,7 @@ class TrainingManagerPlain(TrainingBase):
         :return: the tuple of both, train and test datasets
         """
 
-        idx_train = int(
-            int(CONFIG.get("train_test_split", 0.95)) * processed_data.shape[0]
-        )
+        idx_train = int(0.95 * processed_data.shape[0])
         train_data = processed_data.iloc[:idx_train, :]
         test_data = processed_data.iloc[idx_train:, :]
         return train_data, test_data

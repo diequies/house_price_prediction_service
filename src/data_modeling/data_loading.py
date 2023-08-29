@@ -1,7 +1,7 @@
 """ Methods to download the data """
 import itertools
 import logging
-from datetime import time
+from datetime import datetime
 from typing import List
 
 import pandas as pd
@@ -26,13 +26,13 @@ def load_mysql_house_details(input_variables: List[str]) -> DataFrame:
 
     set_columns_to_load = set(itertools.chain.from_iterable(columns_to_load))
 
-    time_now = int(time.time())
+    time_now = datetime.utcnow().timestamp()
 
     query = (
         f"SELECT {', '.join(list(set_columns_to_load))} "
         f"FROM houses_details"
         f"WHERE publish_unix_time >= "
-        f"{time_now - int(CONFIG.get('days_of_data', 180)) * 60 * 60 * 24}"
+        f"{time_now - CONFIG.get('days_of_data', 180) * 60 * 60 * 24}"
     )
 
     with connection.connect() as conn:

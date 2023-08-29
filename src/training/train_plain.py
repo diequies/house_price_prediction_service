@@ -4,6 +4,7 @@ from typing import List, Tuple
 import pandas as pd
 from pandas import DataFrame, Series
 
+from src.data_modeling.data_loading import load_mysql_house_details
 from src.models.linear_regression import LinearRegressionPredictor
 from src.training.interfaces import PredictorBase, TrainingBase
 from src.utils.utils import INPUT_FEATURES, TARGET_FEATURE
@@ -29,14 +30,17 @@ class TrainingManagerPlain(TrainingBase):
         self.raw_data = self._load_data()
         self.processed_data = pd.DataFrame()
 
-    @staticmethod
-    def _load_data() -> DataFrame:
+    def _load_data(self) -> DataFrame:
         """
         Loads the data from the necessary data sources
         :return: DataFrame with the raw data
         """
         print("Loading data")
-        return pd.DataFrame()
+        # raw_data = load_mysql_house_details(self.input_variables)
+
+        # if not set(self.input_variables).issubset(set(raw_data.columns)):
+
+        return load_mysql_house_details(self.input_variables)
 
     def _process_data(self) -> None:
         """

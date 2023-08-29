@@ -1,5 +1,6 @@
 """ Main constants and parameters """
 import os
+from typing import Dict, Union
 
 MYSQL_DETAILS = {
     "username": os.environ["AWS_RDS_USER"],
@@ -21,7 +22,7 @@ INPUT_FEATURES = ["listing_id", "floor_m_sqrt"]
 
 TARGET_FEATURE = ["price"]
 
-CONFIG = {
+CONFIG: Dict[str, Union[int, float]] = {
     "data_path": "../../data/raw",
     "data_filename": "dummy_data.csv",
     "days_of_data": 180,

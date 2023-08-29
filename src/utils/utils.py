@@ -22,7 +22,7 @@ INPUT_FEATURES = ["listing_id", "floor_m_sqrt"]
 
 TARGET_FEATURE = ["price"]
 
-CONFIG: Dict[str, Union[int, float]] = {
+CONFIG: Dict[str, Union[int, float, str]] = {
     "data_path": "../../data/raw",
     "data_filename": "dummy_data.csv",
     "days_of_data": 180,

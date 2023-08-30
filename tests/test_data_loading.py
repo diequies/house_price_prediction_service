@@ -6,7 +6,7 @@ from src.data_modeling.data_loading import load_mysql_house_details
 from src.utils.exceptions import NotAllInputsAvailableError
 
 
-def test_not_all_columns_available(mocker, monkeypatch):
+def test_not_all_columns_available(mocker):
     """
     test that we raise a NotAllInputsAvailableError when not all the required
     inputs are available

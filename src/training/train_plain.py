@@ -1,13 +1,19 @@
 """ Training class to train basic models """
 from typing import List, Tuple
 
+import mlflow
 import pandas as pd
 from pandas import DataFrame
 
 from src.data_modeling.data_loading import load_mysql_house_details
 from src.models.linear_regression import LinearRegressionPredictor
 from src.training.interfaces import PredictorBase, TrainingBase
-from src.utils.utils import INPUT_FEATURES, TARGET_FEATURE, TRAIN_TEST_SPLIT
+from src.utils.utils import (
+    INPUT_FEATURES,
+    MLFLOW_CONFIG,
+    TARGET_FEATURE,
+    TRAIN_TEST_SPLIT,
+)
 
 
 class TrainingManagerPlain(TrainingBase):
@@ -64,8 +70,10 @@ class TrainingManagerPlain(TrainingBase):
         :param x_train: data to be used for training
         :param y_train: target feature to train the model
         """
+        params = {"variables": ", ".join(self.input_variables)}
 
-        self.model.fit(x_train=x_train, y_train=y_train)
+        params = self.model.fit(x_train=x_train, y_train=y_train, params=params)
+        mlflow.log_params(params)
 
     def run_training(self) -> None:
         """
@@ -79,7 +87,13 @@ class TrainingManagerPlain(TrainingBase):
         x_train = train_data[self.input_variables]
         y_train = train_data[TARGET_FEATURE]
 
-        self._fit_predictor(x_train=x_train, y_train=y_train)
+        mlflow.set_experiment(MLFLOW_CONFIG["experiment_name"])
+        run_name = MLFLOW_CONFIG["run_name"]
+        experiment_id = mlflow.get_experiment_by_name(
+            MLFLOW_CONFIG["experiment_name"]
+        ).experiment_id
+        with mlflow.start_run(run_name=run_name, experiment_id=experiment_id):
+            self._fit_predictor(x_train=x_train, y_train=y_train)
 
     def save_model(self, path: str) -> None:
         pass

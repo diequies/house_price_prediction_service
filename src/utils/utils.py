@@ -17,6 +17,10 @@ DATA_TO_LOAD_MAP = {
     "floor_m_sqrt": ["floor_m_sqrt"],
 }
 
+MLFLOW_CONFIG = {"experiment_name": "experiment_trial", "run_name": "run_trial"}
+
+TRACKING_SERVER_HOST = "http://ec2-34-244-64-152.eu-west-1.compute.amazonaws.com"
+
 INPUT_FEATURES = ["listing_id", "floor_m_sqrt"]
 
 TARGET_FEATURE = ["price"]

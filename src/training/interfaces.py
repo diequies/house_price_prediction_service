@@ -1,7 +1,7 @@
 """ Interfaces to define general contracts """
 
 from abc import ABC, abstractmethod
-from typing import List, Tuple
+from typing import Any, Dict, List, Tuple
 
 from pandas import DataFrame
 
@@ -12,11 +12,14 @@ class PredictorBase(ABC):
     """
 
     @abstractmethod
-    def fit(self, x_train: DataFrame, y_train: DataFrame) -> None:
+    def fit(
+        self, x_train: DataFrame, y_train: DataFrame, params: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """
         Method to train the model
         :param x_train: Processed data to use to train the model
         :param y_train: Target feature
+        :param params: Dictionary with the parameters to persist to MLFlow
         """
 
     @abstractmethod

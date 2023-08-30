@@ -1,6 +1,6 @@
 """ Linear Regressor model """
 
-from typing import List
+from typing import Any, Dict, List
 
 import pandas as pd
 from pandas import DataFrame
@@ -21,13 +21,20 @@ class LinearRegressionPredictor(PredictorBase):
         """
         self.model = LinearRegression(fit_intercept=fit_intercept)
 
-    def fit(self, x_train: DataFrame, y_train: DataFrame) -> None:
+    def fit(
+        self, x_train: DataFrame, y_train: DataFrame, params: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """
         Trains the linear regression model
         :param x_train: Processed data to use to train the model
         :param y_train: Target feature
+        :param params: Dictionary with the parameters to persist to MLFlow
         """
+        params["model"] = self.model.__class__.__name__
+        params["fit_intercept"] = self.model.fit_intercept
         self.model = self.model.fit(X=x_train, y=y_train)
+
+        return params
 
     def predict(self, x_predict: DataFrame) -> List:
         """

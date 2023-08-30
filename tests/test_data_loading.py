@@ -14,11 +14,9 @@ def test_not_all_columns_available(mocker, monkeypatch):
     input_features = ["listing_id", "floor_m_sqrt"]
     wrong_input_features = ["listing_id"]
     mocker.patch(
-        "pandas.read_sql", return_value=pd.DataFrame(columns=wrong_input_features)
+        "src.data_modeling.data_loading.execute_mysql_query",
+        return_value=pd.DataFrame(columns=wrong_input_features),
     )
-    mocker.patch("sqlalchemy.create_engine", return_value="")
-    monkeypatch.setenv("AWS_RDS_USER", "mock_user")
-    monkeypatch.setenv("AWS_RDS_PASS", "mock_pass")
 
     with pytest.raises(NotAllInputsAvailableError):
         load_mysql_house_details(input_variables=input_features)

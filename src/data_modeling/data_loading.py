@@ -4,11 +4,9 @@ import logging
 from datetime import datetime
 from typing import List
 
-import pandas as pd
 from pandas import DataFrame
-from sqlalchemy import text
 
-from src.utils.db_utils import get_mysql_connection
+from src.utils.db_utils import execute_mysql_query
 from src.utils.exceptions import NotAllInputsAvailableError
 from src.utils.utils import (
     DATA_TO_LOAD_MAP,
@@ -23,8 +21,6 @@ def load_mysql_house_details(input_variables: List[str]) -> DataFrame:
     :return A pandas DataFrame with the required data"""
 
     logging.info("Getting raw house details from MySQL")
-
-    connection = get_mysql_connection(schema=MYSQL_DETAILS["schema"])
 
     inputs_required = input_variables + TARGET_FEATURE
 
@@ -43,7 +39,7 @@ def load_mysql_house_details(input_variables: List[str]) -> DataFrame:
         f"{time_now - DAYS_OF_DATA_TO_LOAD * 60 * 60 * 24}"
     )
 
-    raw_data = pd.read_sql(text(query), con=connection.connect())
+    raw_data = execute_mysql_query(query=query, schema=MYSQL_DETAILS["schema"])
 
     if not set_columns_to_load.issubset(set(raw_data.columns)):
         raise NotAllInputsAvailableError("Please review the input data")

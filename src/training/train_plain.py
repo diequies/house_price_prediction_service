@@ -87,11 +87,7 @@ class TrainingManagerPlain(TrainingBase):
         rmse = mean_squared_error(y_true=y_test, y_pred=y_pred, squared=False)
         correlation = compute_correlation(y_test, y_pred)
 
-        print(
-            "Model rmse: {0:.4f} and correlation: {0:.4f}".format(
-                rmse,
-            )
-        )
+        print(f"Model rmse: {rmse:.4f} and correlation: {correlation:.4f}")
 
         mlflow.log_metrics({"rmse": rmse, "correlation": correlation})
 

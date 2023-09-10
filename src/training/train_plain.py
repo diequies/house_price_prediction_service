@@ -4,10 +4,12 @@ from typing import List, Tuple
 import mlflow
 import pandas as pd
 from pandas import DataFrame
+from sklearn.metrics import mean_squared_error
 
 from src.data_modeling.data_loading import load_mysql_house_details
 from src.models.linear_regression import LinearRegressionPredictor
 from src.training.interfaces import PredictorBase, TrainingBase
+from src.utils.metric_utils import compute_correlation
 from src.utils.utils import (
     INPUT_FEATURES,
     MLFLOW_CONFIG,
@@ -75,6 +77,24 @@ class TrainingManagerPlain(TrainingBase):
         params = self.model.fit(x_train=x_train, y_train=y_train, params=params)
         mlflow.log_params(params)
 
+    def _log_results(self, x_test: DataFrame, y_test: DataFrame) -> None:
+        """
+        Method to calculate and log the metrics
+        :param x_test: the data to predict the test results
+        :param y_test: the true values to compare
+        """
+        y_pred = self.model.predict(x_test)
+        rmse = mean_squared_error(y_true=y_test, y_pred=y_pred, squared=False)
+        correlation = compute_correlation(y_test, y_pred)
+
+        print(
+            "Model rmse: {0:.4f} and correlation: {0:.4f}".format(
+                rmse,
+            )
+        )
+
+        mlflow.log_metrics({"rmse": rmse, "correlation": correlation})
+
     def run_training(self) -> None:
         """
         Main method to run the model training
@@ -82,10 +102,13 @@ class TrainingManagerPlain(TrainingBase):
 
         self._process_data()
 
-        train_data, _ = self._train_test_split(self.processed_data)
+        train_data, test_data = self._train_test_split(self.processed_data)
 
         x_train = train_data[self.input_variables]
         y_train = train_data[TARGET_FEATURE]
+
+        x_test = test_data[self.input_variables]
+        y_test = test_data[TARGET_FEATURE]
 
         mlflow.set_experiment(MLFLOW_CONFIG["experiment_name"])
         run_name = MLFLOW_CONFIG["run_name"]
@@ -94,6 +117,7 @@ class TrainingManagerPlain(TrainingBase):
         ).experiment_id
         with mlflow.start_run(run_name=run_name, experiment_id=experiment_id):
             self._fit_predictor(x_train=x_train, y_train=y_train)
+            self._log_results(x_test=x_test, y_test=y_test)
 
     def save_model(self, path: str) -> None:
         pass

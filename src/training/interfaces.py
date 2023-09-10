@@ -77,6 +77,14 @@ class TrainingBase(ABC):
         """
 
     @abstractmethod
+    def _log_results(self, x_test: DataFrame, y_test: DataFrame) -> None:
+        """
+        Method to calculate and log the metrics
+        :param x_test: the data to predict the test results
+        :param y_test: the true values to compare
+        """
+
+    @abstractmethod
     def run_training(self) -> None:
         """
         Method to run the whole training process

@@ -42,5 +42,5 @@ class LinearRegressionPredictor(PredictorBase):
         :param x_predict: Data to use to predict
         :return: List of predicted values
         """
-        y_predict = self.model.predict(X=x_predict)
+        y_predict = list(self.model.predict(X=x_predict))
         return pd.Series(y_predict).tolist()

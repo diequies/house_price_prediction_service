@@ -89,10 +89,3 @@ class TrainingBase(ABC):
         """
         Method to run the whole training process
         """
-
-    @abstractmethod
-    def save_model(self, path: str) -> None:
-        """
-        Method to store the model in a specific location
-        :param path: address to the location
-        """

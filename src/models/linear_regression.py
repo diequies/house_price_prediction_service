@@ -2,7 +2,9 @@
 
 from typing import Any, Dict, List
 
+import mlflow
 import pandas as pd
+from mlflow.models import infer_signature
 from pandas import DataFrame
 from sklearn.linear_model import LinearRegression
 
@@ -33,6 +35,17 @@ class LinearRegressionPredictor(PredictorBase):
         params["model"] = self.model.__class__.__name__
         params["fit_intercept"] = self.model.fit_intercept
         self.model = self.model.fit(X=x_train, y=y_train)
+
+        signature = infer_signature(
+            model_input=x_train, model_output=self.model.predict(x_train)
+        )
+
+        mlflow.sklearn.log_model(
+            sk_model=self.model,
+            registered_model_name=params["model"],
+            artifact_path="linear_regression",
+            signature=signature,
+        )
 
         return params
 

@@ -21,7 +21,11 @@ MLFLOW_CONFIG = {"experiment_name": "experiment_trial", "run_name": "run_trial"}
 
 TRACKING_SERVER_HOST = "http://ec2-34-244-64-152.eu-west-1.compute.amazonaws.com"
 
-INPUT_FEATURES = ["listing_id", "floor_m_sqrt"]
+INPUT_FEATURES = ["floor_m_sqrt"]
+
+INPUT_SCHEMA = {"floor_m_sqrt": "float"}
+
+OUTPUT_SCHEMA = {"price": "float"}
 
 TARGET_FEATURE = ["price"]
 

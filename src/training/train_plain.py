@@ -18,7 +18,7 @@ from src.utils.utils import (
 )
 
 
-class TrainingManagerPlain(TrainingBase):
+class TrainingManagerPlain(TrainingBase):  # pylint: disable=too-few-public-methods
     """
     Plain training manager class to train basic models
     """

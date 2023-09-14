@@ -31,7 +31,7 @@ class PredictorBase(ABC):
         """
 
 
-class TrainingBase(ABC):
+class TrainingBase(ABC):  # pylint: disable=too-few-public-methods
     """
     Defines the general contract for the training classes
     """

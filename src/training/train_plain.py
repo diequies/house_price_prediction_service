@@ -127,7 +127,6 @@ def run() -> None:
     )
 
     training_manager.run_training()
-    training_manager.save_model(path="path")
 
 
 if __name__ == "__main__":

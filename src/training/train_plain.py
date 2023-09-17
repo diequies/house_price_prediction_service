@@ -119,7 +119,6 @@ class TrainingManagerPlain(TrainingBase):  # pylint: disable=too-few-public-meth
         """
         Method to save or register the trained model
         """
-        pass
 
 
 def run() -> None:

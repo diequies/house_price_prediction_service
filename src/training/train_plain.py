@@ -140,11 +140,11 @@ class TrainingManagerPlain(TrainingBase):  # pylint: disable=too-few-public-meth
             )
             return
 
-        model_uri_prod = f"models:/{model_name}/Production"
+        # model_uri_prod = f"models:/{model_name}/Production"
+        #
+        # model_prod = mlflow.pyfunc.load_model(model_uri_prod)
 
-        model_prod = mlflow.pyfunc.load_model(model_uri_prod)
-
-        return model_prod
+        return
 
 
 def run() -> None:

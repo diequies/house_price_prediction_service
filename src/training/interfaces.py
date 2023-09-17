@@ -13,6 +13,10 @@ class PredictorBase(ABC):
     """
 
     @abstractmethod
+    def __init__(self):
+        self.model = None
+
+    @abstractmethod
     def fit(
         self, x_train: DataFrame, y_train: DataFrame, params: Dict[str, Any]
     ) -> Dict[str, Any]:

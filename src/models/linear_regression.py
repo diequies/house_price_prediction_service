@@ -11,7 +11,7 @@ from pandas import DataFrame
 from sklearn.linear_model import LinearRegression
 
 from src.training.interfaces import PredictorBase
-from src.utils.exceptions import NoModelInfoAvailable
+from src.utils.exceptions import NoModelInfoAvailableError
 
 
 class LinearRegressionPredictor(PredictorBase):
@@ -91,8 +91,8 @@ class LinearRegressionPredictor(PredictorBase):
         """
         if self._model_info is not None:
             return self._model_info
-        else:
-            raise NoModelInfoAvailable("Model Info not available yet")
+
+        raise NoModelInfoAvailableError("Model Info not available yet")
 
     @model_info.setter
     def model_info(self, model_info: ModelInfo) -> None:

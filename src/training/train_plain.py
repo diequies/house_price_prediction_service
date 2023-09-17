@@ -3,6 +3,7 @@ from typing import List, Tuple
 
 import mlflow
 import pandas as pd
+from mlflow import MlflowClient
 from pandas import DataFrame
 from sklearn.metrics import mean_squared_error
 
@@ -119,6 +120,31 @@ class TrainingManagerPlain(TrainingBase):  # pylint: disable=too-few-public-meth
         """
         Method to save or register the trained model
         """
+        client = MlflowClient()
+        model_name = self.model.model.__class__.__name__
+
+        model_version_prod = client.get_latest_versions(
+            model_name, stages=["Production"]
+        )
+
+        model_version_staging = client.get_latest_versions(
+            model_name, stages=["Staging"]
+        )
+
+        if len(model_version_prod) == 0:
+            client.transition_model_version_stage(
+                name=model_name,
+                version=model_version_staging[0].version,
+                stage="Production",
+                archive_existing_versions=True,
+            )
+            return
+
+        model_uri_prod = f"models:/{model_name}/Production"
+
+        model_prod = mlflow.pyfunc.load_model(model_uri_prod)
+
+        return model_prod
 
 
 def run() -> None:
@@ -132,6 +158,7 @@ def run() -> None:
     )
 
     training_manager.run_training()
+    training_manager.save_model()
 
 
 if __name__ == "__main__":

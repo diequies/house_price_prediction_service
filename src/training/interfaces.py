@@ -3,6 +3,7 @@
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Tuple
 
+from mlflow.models.model import ModelInfo
 from pandas import DataFrame
 
 
@@ -28,6 +29,22 @@ class PredictorBase(ABC):
         Method to predict using a trained model
         :param x_predict: Data to use to predict
         :return: Predictions
+        """
+
+    @property
+    @abstractmethod
+    def model_info(self) -> ModelInfo:
+        """
+        Getter for the model info
+        :return: The ModelInfo MLFlow class
+        """
+
+    @model_info.setter
+    @abstractmethod
+    def model_info(self, model_info: ModelInfo) -> None:
+        """
+        Setter for the model info
+        :param model_info: The model info to be set
         """
 
 

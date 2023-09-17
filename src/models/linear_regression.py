@@ -6,10 +6,12 @@ import mlflow
 import pandas as pd
 from mlflow import MlflowClient
 from mlflow.models import infer_signature
+from mlflow.models.model import ModelInfo
 from pandas import DataFrame
 from sklearn.linear_model import LinearRegression
 
 from src.training.interfaces import PredictorBase
+from src.utils.exceptions import NoModelInfoAvailable
 
 
 class LinearRegressionPredictor(PredictorBase):
@@ -22,7 +24,7 @@ class LinearRegressionPredictor(PredictorBase):
         Constructor method for the Linear Regression Model
         :param fit_intercept: Whether to calculate the intercept
         """
-        self.model_info = None
+        self._model_info = None
         self.model = LinearRegression(fit_intercept=fit_intercept)
 
     def fit(
@@ -80,3 +82,22 @@ class LinearRegressionPredictor(PredictorBase):
         """
         y_predict = list(self.model.predict(X=x_predict))
         return pd.Series(y_predict).tolist()
+
+    @property
+    def model_info(self) -> ModelInfo:
+        """
+        Getter for the model info
+        :return: The ModelInfo MLFlow class
+        """
+        if self._model_info is not None:
+            return self._model_info
+        else:
+            raise NoModelInfoAvailable("Model Info not available yet")
+
+    @model_info.setter
+    def model_info(self, model_info: ModelInfo) -> None:
+        """
+        Setter for the model info
+        :param model_info: The model info to be set
+        """
+        self._model_info = model_info

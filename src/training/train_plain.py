@@ -16,6 +16,7 @@ from src.utils.utils import (
     MLFLOW_CONFIG,
     TARGET_FEATURE,
     TRAIN_TEST_SPLIT,
+    TRAIN_VAL_SPLIT,
 )
 
 
@@ -55,17 +56,22 @@ class TrainingManagerPlain(TrainingBase):  # pylint: disable=too-few-public-meth
         self.processed_data = self.raw_data.dropna()
 
     @staticmethod
-    def _train_test_split(processed_data: DataFrame) -> Tuple[DataFrame, DataFrame]:
+    def _train_val_test_split(
+        processed_data: DataFrame,
+    ) -> Tuple[DataFrame, DataFrame, DataFrame]:
         """
-        Divide the data into train and testing datasets
+        Divide the data into train, validation and testing datasets
         :param processed_data: the processed data to divide
         :return: the tuple of both, train and test datasets
         """
 
         idx_train = int(TRAIN_TEST_SPLIT * processed_data.shape[0])
-        train_data = processed_data.iloc[:idx_train, :]
-        test_data = processed_data.iloc[idx_train:, :]
-        return train_data, test_data
+        train_val_data = processed_data.iloc[:idx_train, :].copy()
+        test_data = processed_data.iloc[idx_train:, :].copy()
+        idx_train = int(TRAIN_VAL_SPLIT * train_val_data.shape[0])
+        train_data = train_val_data.iloc[:idx_train, :].copy()
+        val_data = train_val_data.iloc[idx_train:, :].copy()
+        return train_data, val_data, test_data
 
     def _fit_predictor(self, x_train: DataFrame, y_train: DataFrame) -> None:
         """
@@ -78,15 +84,15 @@ class TrainingManagerPlain(TrainingBase):  # pylint: disable=too-few-public-meth
         params = self.model.fit(x_train=x_train, y_train=y_train, params=params)
         mlflow.log_params(params)
 
-    def _log_results(self, x_test: DataFrame, y_test: DataFrame) -> None:
+    def _log_results(self, x_val: DataFrame, y_val: DataFrame) -> None:
         """
         Method to calculate and log the metrics
-        :param x_test: the data to predict the test results
-        :param y_test: the true values to compare
+        :param x_val: the data to predict the validation results
+        :param y_val: the true values to compare
         """
-        y_pred = self.model.predict(x_test)
-        rmse = mean_squared_error(y_true=y_test, y_pred=y_pred, squared=False)
-        correlation = compute_correlation(y_test, y_pred)
+        y_pred = self.model.predict(x_val)
+        rmse = mean_squared_error(y_true=y_val, y_pred=y_pred, squared=False)
+        correlation = compute_correlation(y_val, y_pred)
 
         print(f"Model rmse: {rmse:.4f} and correlation: {correlation:.4f}")
 
@@ -99,10 +105,15 @@ class TrainingManagerPlain(TrainingBase):  # pylint: disable=too-few-public-meth
 
         self._process_data()
 
-        train_data, test_data = self._train_test_split(self.processed_data)
+        train_data, val_data, test_data = self._train_val_test_split(
+            self.processed_data
+        )
 
         x_train = train_data[self.input_variables]
         y_train = train_data[TARGET_FEATURE]
+
+        x_val = val_data[self.input_variables]
+        y_val = val_data[TARGET_FEATURE]
 
         x_test = test_data[self.input_variables]
         y_test = test_data[TARGET_FEATURE]
@@ -114,11 +125,15 @@ class TrainingManagerPlain(TrainingBase):  # pylint: disable=too-few-public-meth
         ).experiment_id
         with mlflow.start_run(run_name=run_name, experiment_id=experiment_id):
             self._fit_predictor(x_train=x_train, y_train=y_train)
-            self._log_results(x_test=x_test, y_test=y_test)
+            self._log_results(x_val=x_val, y_val=y_val)
 
-    def save_model(self) -> None:
+        self._save_model(x_test=x_test, y_test=y_test)
+
+    def _save_model(self, x_test: DataFrame, y_test: DataFrame) -> None:
         """
         Method to save or register the trained model
+        :param x_test: the data to predict the test results
+        :param y_test: the true values to compare
         """
         client = MlflowClient()
         model_name = self.model.model.__class__.__name__
@@ -138,13 +153,43 @@ class TrainingManagerPlain(TrainingBase):  # pylint: disable=too-few-public-meth
                 stage="Production",
                 archive_existing_versions=True,
             )
+            print(
+                "New model transitioned to production as no other production model "
+                "existed"
+            )
             return
 
-        # model_uri_prod = f"models:/{model_name}/Production"
-        #
-        # model_prod = mlflow.pyfunc.load_model(model_uri_prod)
+        model_uri_prod = f"models:/{model_name}/Production"
 
-        return
+        model_prod = mlflow.pyfunc.load_model(model_uri_prod)
+
+        y_pred_prod = model_prod.predict(x_test)
+
+        y_pred_staging = self.model.predict(x_test)
+
+        rmse_prod = mean_squared_error(y_true=y_test, y_pred=y_pred_prod, squared=False)
+        rmse_staging = mean_squared_error(
+            y_true=y_test, y_pred=y_pred_staging, squared=False
+        )
+
+        if rmse_prod > rmse_staging:
+            client.transition_model_version_stage(
+                name=model_name,
+                version=model_version_staging[0].version,
+                stage="Production",
+                archive_existing_versions=True,
+            )
+            print(
+                f"New model transitioned to production as the performance is better "
+                f"than the old model. New model RMSE: {rmse_staging} - Old model "
+                f"RMSE: {rmse_prod}"
+            )
+        else:
+            print(
+                f"Kept old production model because the new model did not improve "
+                f"the performance. New model RMSE: {rmse_staging} - Old model "
+                f"RMSE: {rmse_prod}"
+            )
 
 
 def run() -> None:
@@ -158,7 +203,6 @@ def run() -> None:
     )
 
     training_manager.run_training()
-    training_manager.save_model()
 
 
 if __name__ == "__main__":

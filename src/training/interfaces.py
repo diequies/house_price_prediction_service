@@ -84,9 +84,11 @@ class TrainingBase(ABC):  # pylint: disable=too-few-public-methods
 
     @staticmethod
     @abstractmethod
-    def _train_test_split(processed_data: DataFrame) -> Tuple[DataFrame, DataFrame]:
+    def _train_val_test_split(
+        processed_data: DataFrame,
+    ) -> Tuple[DataFrame, DataFrame, DataFrame]:
         """
-        Method to separate the train and test data appropriately
+        Method to separate the train, validation and test data appropriately
         """
 
     @abstractmethod
@@ -98,11 +100,11 @@ class TrainingBase(ABC):  # pylint: disable=too-few-public-methods
         """
 
     @abstractmethod
-    def _log_results(self, x_test: DataFrame, y_test: DataFrame) -> None:
+    def _log_results(self, x_val: DataFrame, y_val: DataFrame) -> None:
         """
         Method to calculate and log the metrics
-        :param x_test: the data to predict the test results
-        :param y_test: the true values to compare
+        :param x_val: the data to predict the validation results
+        :param y_val: the true values to compare
         """
 
     @abstractmethod
@@ -112,7 +114,9 @@ class TrainingBase(ABC):  # pylint: disable=too-few-public-methods
         """
 
     @abstractmethod
-    def save_model(self) -> None:
+    def _save_model(self, x_test: DataFrame, y_test: DataFrame) -> None:
         """
         Method to save or register the trained model
+        :param x_test: the data to predict the test results
+        :param y_test: the true values to compare
         """

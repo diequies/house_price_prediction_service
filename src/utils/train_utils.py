@@ -23,8 +23,8 @@ def get_production_model(model_name: str) -> Optional[PyFuncModel, None]:
     if len(model_version_prod) == 0:
         model_uri_prod = f"models:/{model_name}/Production"
         return mlflow.pyfunc.load_model(model_uri_prod)
-    else:
-        return None
+
+    return None
 
 
 def compare_models(

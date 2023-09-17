@@ -10,7 +10,7 @@ from sklearn.metrics import mean_squared_error
 from src.training.interfaces import PredictorBase
 
 
-def get_production_model(model_name: str) -> Optional[PyFuncModel, None]:
+def get_production_model(model_name: str) -> Optional[PyFuncModel]:
     """
     Method to load a specific model in production
     :param model_name: the name of the model to load

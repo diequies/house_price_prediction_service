@@ -11,6 +11,7 @@ from src.data_modeling.data_loading import load_mysql_house_details
 from src.models.linear_regression import LinearRegressionPredictor
 from src.training.interfaces import PredictorBase, TrainingBase
 from src.utils.metric_utils import compute_correlation
+from src.utils.train_utils import compare_models, get_production_model
 from src.utils.utils import (
     INPUT_FEATURES,
     MLFLOW_CONFIG,
@@ -138,15 +139,13 @@ class TrainingManagerPlain(TrainingBase):  # pylint: disable=too-few-public-meth
         client = MlflowClient()
         model_name = self.model.model.__class__.__name__
 
-        model_version_prod = client.get_latest_versions(
-            model_name, stages=["Production"]
-        )
+        model_prod = get_production_model(model_name=model_name)
 
         model_version_staging = client.get_latest_versions(
             model_name, stages=["Staging"]
         )
 
-        if len(model_version_prod) == 0:
+        if model_prod is None:
             client.transition_model_version_stage(
                 name=model_name,
                 version=model_version_staging[0].version,
@@ -159,17 +158,11 @@ class TrainingManagerPlain(TrainingBase):  # pylint: disable=too-few-public-meth
             )
             return
 
-        model_uri_prod = f"models:/{model_name}/Production"
-
-        model_prod = mlflow.pyfunc.load_model(model_uri_prod)
-
-        y_pred_prod = model_prod.predict(x_test)
-
-        y_pred_staging = self.model.predict(x_test)
-
-        rmse_prod = mean_squared_error(y_true=y_test, y_pred=y_pred_prod, squared=False)
-        rmse_staging = mean_squared_error(
-            y_true=y_test, y_pred=y_pred_staging, squared=False
+        rmse_staging, rmse_prod = compare_models(
+            new_model=model_prod,
+            old_model=self.model.model,
+            x_test=x_test,
+            y_test=y_test,
         )
 
         if rmse_prod > rmse_staging:

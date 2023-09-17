@@ -89,3 +89,9 @@ class TrainingBase(ABC):  # pylint: disable=too-few-public-methods
         """
         Method to run the whole training process
         """
+
+    @abstractmethod
+    def save_model(self) -> None:
+        """
+        Method to save or register the trained model
+        """

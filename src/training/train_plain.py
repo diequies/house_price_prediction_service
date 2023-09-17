@@ -115,6 +115,12 @@ class TrainingManagerPlain(TrainingBase):  # pylint: disable=too-few-public-meth
             self._fit_predictor(x_train=x_train, y_train=y_train)
             self._log_results(x_test=x_test, y_test=y_test)
 
+    def save_model(self) -> None:
+        """
+        Method to save or register the trained model
+        """
+        pass
+
 
 def run() -> None:
     """

@@ -4,6 +4,7 @@ from typing import Any, Dict, List
 
 import mlflow
 import pandas as pd
+from mlflow import MlflowClient
 from mlflow.models import infer_signature
 from pandas import DataFrame
 from sklearn.linear_model import LinearRegression
@@ -21,6 +22,7 @@ class LinearRegressionPredictor(PredictorBase):
         Constructor method for the Linear Regression Model
         :param fit_intercept: Whether to calculate the intercept
         """
+        self.model_info = None
         self.model = LinearRegression(fit_intercept=fit_intercept)
 
     def fit(
@@ -40,11 +42,32 @@ class LinearRegressionPredictor(PredictorBase):
             model_input=x_train, model_output=self.model.predict(x_train)
         )
 
-        mlflow.sklearn.log_model(
+        self.model_info = mlflow.sklearn.log_model(
             sk_model=self.model,
             registered_model_name=params["model"],
             artifact_path="linear_regression",
             signature=signature,
+        )
+
+        client = MlflowClient()
+
+        model_version = client.get_latest_versions(params["model"], stages=["None"])
+
+        if len(model_version) > 0:
+            version = model_version[0].version
+        else:
+            version = 1
+
+        model_version = client.transition_model_version_stage(
+            name=params["model"],
+            version=version,
+            stage="staging",
+            archive_existing_versions=True,
+        )
+
+        print(
+            f"Model {model_version.name} registered in {model_version.current_stage} "
+            f"at {model_version.last_updated_timestamp}"
         )
 
         return params

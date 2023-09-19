@@ -28,8 +28,8 @@ def get_production_model(model_name: str) -> Optional[PyFuncModel]:
 
 
 def compare_models(
-    new_model: PredictorBase,
-    old_model: PyFuncModel,
+    new_model: PyFuncModel,
+    old_model: PredictorBase,
     x_test: DataFrame,
     y_test: DataFrame,
 ) -> Tuple[float, float]:

@@ -7,3 +7,7 @@ class NotAllInputsAvailableError(Exception):
 
 class NoModelInfoAvailableError(Exception):
     """Exception for when requesting the model info before training"""
+
+
+class MissingColumnError(Exception):
+    """Exception for when we are missing a required column"""

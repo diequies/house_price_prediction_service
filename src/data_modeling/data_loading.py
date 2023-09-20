@@ -2,27 +2,26 @@
 import itertools
 import logging
 from datetime import datetime
-from typing import List
 
 from pandas import DataFrame
 
 from src.utils.db_utils import execute_mysql_query
 from src.utils.exceptions import NotAllInputsAvailableError
 from src.utils.utils import (
+    COLUMNS_TO_LOAD,
     DATA_TO_LOAD_MAP,
     DAYS_OF_DATA_TO_LOAD,
     MYSQL_DETAILS,
-    TARGET_FEATURE,
 )
 
 
-def load_mysql_house_details(input_variables: List[str]) -> DataFrame:
+def load_mysql_house_details() -> DataFrame:
     """Method to get the raw tabular data from the main MySQL table
     :return A pandas DataFrame with the required data"""
 
     logging.info("Getting raw house details from MySQL")
 
-    inputs_required = input_variables + TARGET_FEATURE
+    inputs_required = COLUMNS_TO_LOAD
 
     columns_to_load = [
         value for key, value in DATA_TO_LOAD_MAP.items() if key in inputs_required

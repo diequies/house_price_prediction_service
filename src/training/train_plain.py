@@ -47,7 +47,7 @@ class TrainingManagerPlain(TrainingBase):  # pylint: disable=too-few-public-meth
         :return: DataFrame with the raw data
         """
         print("Loading data")
-        return load_mysql_house_details(self.input_variables)
+        return load_mysql_house_details()
 
     def _process_data(self) -> None:
         """
@@ -55,6 +55,9 @@ class TrainingManagerPlain(TrainingBase):  # pylint: disable=too-few-public-meth
         """
 
         self.processed_data = self.raw_data.dropna()
+        self.processed_data = self.processed_data.sort_values(
+            ["publish_unix_time"], ascending=True
+        )
 
     @staticmethod
     def _train_val_test_split(

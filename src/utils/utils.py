@@ -9,12 +9,13 @@ MYSQL_DETAILS = {
     "schema": "house-price-prediction",
 }
 
-COLUMNS_TO_LOAD = ["listing_id", "price", "floor_m_sqrt"]
+COLUMNS_TO_LOAD = ["listing_id", "price", "floor_m_sqrt", "publish_unix_time"]
 
 DATA_TO_LOAD_MAP = {
     "listing_id": ["listing_id"],
     "price": ["price"],
     "floor_m_sqrt": ["floor_m_sqrt"],
+    "publish_unix_time": ["publish_unix_time"],
 }
 
 MLFLOW_CONFIG = {"experiment_name": "experiment_trial", "run_name": "run_trial"}

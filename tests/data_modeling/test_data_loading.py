@@ -11,7 +11,6 @@ def test_not_all_columns_available(mocker):
     test that we raise a NotAllInputsAvailableError when not all the required
     inputs are available
     """
-    input_features = ["listing_id", "floor_m_sqrt"]
     wrong_input_features = ["listing_id"]
     mocker.patch(
         "src.data_modeling.data_loading.execute_mysql_query",
@@ -19,4 +18,4 @@ def test_not_all_columns_available(mocker):
     )
 
     with pytest.raises(NotAllInputsAvailableError):
-        load_mysql_house_details(input_variables=input_features)
+        load_mysql_house_details()

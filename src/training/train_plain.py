@@ -162,8 +162,8 @@ class TrainingManagerPlain(TrainingBase):  # pylint: disable=too-few-public-meth
             return
 
         rmse_staging, rmse_prod = compare_models(
-            new_model=model_prod,
-            old_model=self.model.model,
+            new_model=self.model.model,
+            old_model=model_prod,
             x_test=x_test,
             y_test=y_test,
         )

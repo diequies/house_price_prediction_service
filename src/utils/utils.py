@@ -9,22 +9,31 @@ MYSQL_DETAILS = {
     "schema": "house-price-prediction",
 }
 
-COLUMNS_TO_LOAD = ["listing_id", "price", "floor_m_sqrt", "publish_unix_time"]
+COLUMNS_TO_LOAD = [
+    "listing_id",
+    "price",
+    "floor_m_sqrt",
+    "publish_unix_time",
+    "garden",
+    "parking",
+]
 
 DATA_TO_LOAD_MAP = {
     "listing_id": ["listing_id"],
     "price": ["price"],
     "floor_m_sqrt": ["floor_m_sqrt"],
     "publish_unix_time": ["publish_unix_time"],
+    "garden": ["garden"],
+    "parking": ["parking"],
 }
 
 MLFLOW_CONFIG = {"experiment_name": "experiment_trial", "run_name": "run_trial"}
 
 TRACKING_SERVER_HOST = "http://ec2-34-244-64-152.eu-west-1.compute.amazonaws.com"
 
-INPUT_FEATURES = ["floor_m_sqrt"]
+INPUT_FEATURES = ["floor_m_sqrt", "garden", "parking"]
 
-INPUT_SCHEMA = {"floor_m_sqrt": "float"}
+INPUT_SCHEMA = {"floor_m_sqrt": "float", "garden": "int"}
 
 OUTPUT_SCHEMA = {"price": "float"}
 

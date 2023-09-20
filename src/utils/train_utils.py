@@ -1,13 +1,16 @@
 """ Methods to support the training processes"""
-from typing import Optional, Tuple
+import ast
+from typing import List, Optional, Tuple
 
 import mlflow
 from mlflow import MlflowClient
+from mlflow.models import ModelSignature
 from mlflow.pyfunc import PyFuncModel
 from pandas import DataFrame
 from sklearn.metrics import mean_squared_error
 
 from src.training.interfaces import PredictorBase
+from src.utils.exceptions import EmptyModelSignatureError
 
 
 def get_production_model(model_name: str) -> Optional[PyFuncModel]:
@@ -20,7 +23,7 @@ def get_production_model(model_name: str) -> Optional[PyFuncModel]:
 
     model_version_prod = client.get_latest_versions(model_name, stages=["Production"])
 
-    if len(model_version_prod) == 0:
+    if len(model_version_prod) > 0:
         model_uri_prod = f"models:/{model_name}/Production"
         return mlflow.pyfunc.load_model(model_uri_prod)
 
@@ -28,8 +31,8 @@ def get_production_model(model_name: str) -> Optional[PyFuncModel]:
 
 
 def compare_models(
-    new_model: PyFuncModel,
-    old_model: PredictorBase,
+    new_model: PredictorBase,
+    old_model: PyFuncModel,
     x_test: DataFrame,
     y_test: DataFrame,
 ) -> Tuple[float, float]:
@@ -42,7 +45,9 @@ def compare_models(
     :return: The RMSE for the new and old models against the test data
     """
 
-    y_pred_prod = old_model.predict(x_test)
+    old_model_inputs = get_inputs_from_signature(old_model.metadata.signature)
+
+    y_pred_prod = old_model.predict(x_test[old_model_inputs])
 
     y_pred_staging = new_model.predict(x_test)
 
@@ -52,3 +57,19 @@ def compare_models(
     )
 
     return rmse_staging, rmse_prod
+
+
+def get_inputs_from_signature(signature: ModelSignature) -> List:
+    """
+    Method to extract the list of inputs from the MLFlow model signature
+    :param signature: MLFlow model signature
+    :return: The list of strings with the name of the model inputs
+    """
+    string_of_inputs = signature.to_dict().get("inputs", "")
+
+    if len(string_of_inputs) == 0:
+        raise EmptyModelSignatureError("Model signature does not contain inputs")
+
+    dict_of_inputs = ast.literal_eval(string_of_inputs)
+
+    return [item["name"] for item in dict_of_inputs]

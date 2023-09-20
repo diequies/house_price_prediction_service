@@ -11,3 +11,7 @@ class NoModelInfoAvailableError(Exception):
 
 class MissingColumnError(Exception):
     """Exception for when we are missing a required column"""
+
+
+class EmptyModelSignatureError(Exception):
+    """Exception to show that the model signature is empty"""

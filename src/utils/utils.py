@@ -16,6 +16,15 @@ COLUMNS_TO_LOAD = [
     "publish_unix_time",
     "garden",
     "parking",
+    "balcony_terrace",
+    "furnished",
+    "num_living_rooms",
+    "num_bathrooms",
+    "num_bedrooms",
+    "is_auction",
+    "is_share_ownership",
+    "is_retirement",
+    "chain_free",
 ]
 
 DATA_TO_LOAD_MAP = {
@@ -25,21 +34,69 @@ DATA_TO_LOAD_MAP = {
     "publish_unix_time": ["publish_unix_time"],
     "garden": ["garden"],
     "parking": ["parking"],
+    "balcony_terrace": ["balcony_terrace"],
+    "furnished": ["furnished"],
+    "num_living_rooms": ["num_living_rooms"],
+    "num_bathrooms": ["num_bathrooms"],
+    "num_bedrooms": ["num_bedrooms"],
+    "is_auction": ["is_auction"],
+    "is_share_ownership": ["is_share_ownership"],
+    "is_retirement": ["is_retirement"],
+    "chain_free": ["chain_free"],
 }
 
 MLFLOW_CONFIG = {"experiment_name": "experiment_trial", "run_name": "run_trial"}
 
 TRACKING_SERVER_HOST = "http://ec2-34-244-64-152.eu-west-1.compute.amazonaws.com"
 
-INPUT_FEATURES = ["floor_m_sqrt", "garden", "parking"]
+INPUT_FEATURES = [
+    "floor_m_sqrt",
+    "garden",
+    "parking",
+    "balcony_terrace",
+    "furnished",
+    "num_rooms",
+    "is_auction",
+    "num_living_rooms",
+    "num_bathrooms",
+    "num_bedrooms",
+    "is_share_ownership",
+    "is_retirement",
+    "chain_free",
+]
 
-INPUT_SCHEMA = {"floor_m_sqrt": "float", "garden": "int"}
+FEATURES_TO_FLOAT = [
+    "num_rooms",
+    "is_auction",
+    "num_living_rooms",
+    "num_bathrooms",
+    "num_bedrooms",
+    "is_share_ownership",
+    "is_retirement",
+    "chain_free",
+]
+
+INPUT_SCHEMA = {
+    "floor_m_sqrt": "float",
+    "garden": "float",
+    "parking": "float",
+    "balcony_terrace": "float",
+    "furnished": "float",
+    "num_rooms": "float",
+    "is_auction": "float",
+    "num_living_rooms": "float",
+    "num_bathrooms": "float",
+    "num_bedrooms": "float",
+    "is_share_ownership": "float",
+    "is_retirement": "float",
+    "chain_free": "float",
+}
 
 OUTPUT_SCHEMA = {"price": "float"}
 
 TARGET_FEATURE = ["price"]
 
-DAYS_OF_DATA_TO_LOAD = 180
+DAYS_OF_DATA_TO_LOAD = 365
 
 TRAIN_TEST_SPLIT = 0.99
 

@@ -13,6 +13,7 @@ from src.training.interfaces import PredictorBase, TrainingBase
 from src.utils.metric_utils import compute_correlation
 from src.utils.train_utils import compare_models, get_production_model
 from src.utils.utils import (
+    FEATURES_TO_FLOAT,
     INPUT_FEATURES,
     MLFLOW_CONFIG,
     TARGET_FEATURE,
@@ -58,6 +59,14 @@ class TrainingManagerPlain(TrainingBase):  # pylint: disable=too-few-public-meth
         self.processed_data = self.processed_data.sort_values(
             ["publish_unix_time"], ascending=True
         )
+        self.processed_data["num_rooms"] = (
+            self.processed_data["num_living_rooms"]
+            + self.processed_data["num_bathrooms"]
+            + self.processed_data["num_bedrooms"]
+        )
+        self.processed_data[FEATURES_TO_FLOAT] = self.processed_data[
+            FEATURES_TO_FLOAT
+        ].astype(float)
 
     @staticmethod
     def _train_val_test_split(

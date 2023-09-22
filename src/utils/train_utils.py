@@ -67,9 +67,9 @@ def get_inputs_from_signature(signature: ModelSignature) -> List:
     """
     string_of_inputs = signature.to_dict().get("inputs", "")
 
-    if len(string_of_inputs) == 0:
+    list_of_inputs = ast.literal_eval(string_of_inputs)
+
+    if len(string_of_inputs) == 0 or len(list_of_inputs) == 0:
         raise EmptyModelSignatureError("Model signature does not contain inputs")
 
-    dict_of_inputs = ast.literal_eval(string_of_inputs)
-
-    return [item["name"] for item in dict_of_inputs]
+    return [item["name"] for item in list_of_inputs]

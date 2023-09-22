@@ -37,7 +37,7 @@ jobs:
       - name: Run flake8
         run: |
           python -m pip install --upgrade flake8
-          flake8 --ignore E203, W503 --max-line-length 88 --path src
+          flake8 --ignore E203, W503 --max-line-length 88
       - name: Run PyLint
         run: |
           source .venv/bin/activate

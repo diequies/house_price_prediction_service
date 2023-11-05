@@ -4,7 +4,6 @@ from typing import Any, Dict, List, Optional
 
 import pandas as pd
 from mlflow.models.model import ModelInfo
-from mlflow.pyfunc import PythonModel
 from pandas import DataFrame
 from sklearn.linear_model import LinearRegression
 
@@ -16,7 +15,7 @@ from src.utils.exceptions import (
 )
 
 
-class LinearRegressionPredictor(PredictorBase, PythonModel):
+class LinearRegressionPredictor(PredictorBase):
     """
     Linear Regression model to predict house prices
     """

@@ -4,10 +4,11 @@ from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Tuple
 
 from mlflow.models.model import ModelInfo
+from mlflow.pyfunc import PythonModel
 from pandas import DataFrame
 
 
-class PredictorBase(ABC):
+class PredictorBase(PythonModel):
     """
     Defines the general contract for the prediction models
     """

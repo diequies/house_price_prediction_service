@@ -46,7 +46,7 @@ class LinearRegressionPredictor(PredictorBase, PythonModel):
         return params
 
     def predict(
-        self, model_input: DataFrame, context, params: Optional[Dict[str, Any]] = None
+        self, context, model_input: DataFrame, params: Optional[Dict[str, Any]] = None
     ) -> List:
         """
         Method to predict house prices using the linear regression model

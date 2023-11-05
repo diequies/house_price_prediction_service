@@ -27,14 +27,6 @@ class PredictorBase(ABC):
         :param params: Dictionary with the parameters to persist to MLFlow
         """
 
-    @abstractmethod
-    def predict(self, x_predict: DataFrame) -> List:
-        """
-        Method to predict using a trained model
-        :param x_predict: Data to use to predict
-        :return: Predictions
-        """
-
     @property
     @abstractmethod
     def model_info(self) -> ModelInfo:

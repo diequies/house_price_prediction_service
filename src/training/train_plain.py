@@ -1,9 +1,11 @@
 """ Training class to train basic models """
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
 import mlflow
 import pandas as pd
 from mlflow import MlflowClient
+from mlflow.models import infer_signature
+from mlflow.pyfunc import PythonModel
 from pandas import DataFrame
 from sklearn.metrics import mean_squared_error
 
@@ -30,7 +32,7 @@ class TrainingManagerPlain(TrainingBase):  # pylint: disable=too-few-public-meth
     def __init__(
         self,
         input_variables: List[str],
-        model: PredictorBase,
+        model: Union[PredictorBase, PythonModel],
     ):
         """
         Constructor for the training manager class
@@ -95,6 +97,40 @@ class TrainingManagerPlain(TrainingBase):  # pylint: disable=too-few-public-meth
         params = {"variables": ", ".join(self.input_variables)}
 
         params = self.model.fit(x_train=x_train, y_train=y_train, params=params)
+
+        signature = infer_signature(
+            model_input=x_train,
+            model_output=self.model.predict(model_input=x_train, context={}),
+        )
+
+        self.model.model_info = mlflow.pyfunc.log_model(
+            sk_model=self.model,
+            registered_model_name=params["model"],
+            artifact_path=params["artifact_path"],
+            signature=signature,
+        )
+
+        client = MlflowClient()
+
+        model_version = client.get_latest_versions(params["model"], stages=["None"])
+
+        if len(model_version) > 0:
+            version = model_version[0].version
+        else:
+            version = 1
+
+        model_version = client.transition_model_version_stage(
+            name=params["model"],
+            version=version,
+            stage="staging",
+            archive_existing_versions=True,
+        )
+
+        print(
+            f"Model {model_version.name} registered in {model_version.current_stage} "
+            f"at {model_version.last_updated_timestamp}"
+        )
+
         mlflow.log_params(params)
 
     def _log_results(self, x_val: DataFrame, y_val: DataFrame) -> None:

@@ -1,20 +1,22 @@
 """ Linear Regressor model """
 
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
-import mlflow
 import pandas as pd
-from mlflow import MlflowClient
-from mlflow.models import infer_signature
 from mlflow.models.model import ModelInfo
+from mlflow.pyfunc import PythonModel
 from pandas import DataFrame
 from sklearn.linear_model import LinearRegression
 
 from src.training.interfaces import PredictorBase
-from src.utils.exceptions import NoModelInfoAvailableError
+from src.utils.exceptions import (
+    MissingColumnError,
+    NoModelInfoAvailableError,
+    WrongTypeColumnError,
+)
 
 
-class LinearRegressionPredictor(PredictorBase):
+class LinearRegressionPredictor(PredictorBase, PythonModel):
     """
     Linear Regression model to predict house prices
     """
@@ -38,49 +40,30 @@ class LinearRegressionPredictor(PredictorBase):
         """
         params["model"] = self.model.__class__.__name__
         params["fit_intercept"] = self.model.fit_intercept
+        params["artifact_path"] = "linear_regression"
         self.model = self.model.fit(X=x_train, y=y_train)
-
-        signature = infer_signature(
-            model_input=x_train, model_output=self.model.predict(x_train)
-        )
-
-        self.model_info = mlflow.sklearn.log_model(
-            sk_model=self.model,
-            registered_model_name=params["model"],
-            artifact_path="linear_regression",
-            signature=signature,
-        )
-
-        client = MlflowClient()
-
-        model_version = client.get_latest_versions(params["model"], stages=["None"])
-
-        if len(model_version) > 0:
-            version = model_version[0].version
-        else:
-            version = 1
-
-        model_version = client.transition_model_version_stage(
-            name=params["model"],
-            version=version,
-            stage="staging",
-            archive_existing_versions=True,
-        )
-
-        print(
-            f"Model {model_version.name} registered in {model_version.current_stage} "
-            f"at {model_version.last_updated_timestamp}"
-        )
 
         return params
 
-    def predict(self, x_predict: DataFrame) -> List:
+    def predict(
+        self, model_input: DataFrame, context, params: Optional[Dict[str, Any]] = None
+    ) -> List:
         """
         Method to predict house prices using the linear regression model
-        :param x_predict: Data to use to predict
+        :param context: A :class:`~PythonModelContext` instance containing artifacts
+                        that the model can use to perform inference.
+        :param model_input: A pyfunc-compatible input for the model to evaluate.
+        :param params: Additional parameters to pass to the model for inference.
         :return: List of predicted values
         """
-        y_predict = list(self.model.predict(X=x_predict))
+        if context:
+            input_signature = context.get("input_signature", None)
+            if input_signature:
+                self._validate_inputs(
+                    model_input=model_input, input_signature=input_signature
+                )
+
+        y_predict = list(self.model.predict(X=model_input))
         return pd.Series(y_predict).tolist()
 
     @property
@@ -101,3 +84,31 @@ class LinearRegressionPredictor(PredictorBase):
         :param model_info: The model info to be set
         """
         self._model_info = model_info
+
+    @staticmethod
+    def _validate_inputs(model_input: DataFrame, input_signature: List[Dict]) -> bool:
+        required_columns = {
+            columns["name"] for columns in input_signature if "name" in columns.keys()
+        }
+
+        all_column_names_in_model_input = (
+            required_columns.intersection(set(model_input.columns)) == required_columns
+        )
+
+        if not all_column_names_in_model_input:
+            raise MissingColumnError("Model input missing required columns")
+
+        for column_data in input_signature:
+            column_name = column_data["name"]
+            column_type = column_data["type"]
+
+            is_type_correct = column_type == str(model_input[column_name].dtype)
+
+            if not is_type_correct:
+                raise WrongTypeColumnError(
+                    f"Column {column_name} is "
+                    f"{str(model_input[column_name].dtype)} "
+                    f"but the expected type was {column_type}"
+                )
+
+        return True

@@ -15,3 +15,7 @@ class MissingColumnError(Exception):
 
 class EmptyModelSignatureError(Exception):
     """Exception to show that the model signature is empty"""
+
+
+class WrongTypeColumnError(Exception):
+    """Exception to show that one column is of the wrong expected type"""

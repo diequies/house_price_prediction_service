@@ -49,7 +49,7 @@ def compare_models(
 
     y_pred_prod = old_model.predict(x_test[old_model_inputs])
 
-    y_pred_staging = new_model.predict(model_input=x_test, context={})
+    y_pred_staging = new_model.predict(context=None, model_input=x_test)
 
     rmse_prod = mean_squared_error(y_true=y_test, y_pred=y_pred_prod, squared=False)
     rmse_staging = mean_squared_error(

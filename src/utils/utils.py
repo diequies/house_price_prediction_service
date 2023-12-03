@@ -1,6 +1,8 @@
 """ Main constants and parameters """
 import os
 
+from mlflow.types import ColSpec, Schema
+
 MYSQL_DETAILS = {
     "username": os.environ["AWS_RDS_USER"],
     "password": os.environ["AWS_RDS_PASS"],
@@ -76,23 +78,25 @@ FEATURES_TO_FLOAT = [
     "chain_free",
 ]
 
-INPUT_SCHEMA = {
-    "floor_m_sqrt": "float",
-    "garden": "float",
-    "parking": "float",
-    "balcony_terrace": "float",
-    "furnished": "float",
-    "num_rooms": "float",
-    "is_auction": "float",
-    "num_living_rooms": "float",
-    "num_bathrooms": "float",
-    "num_bedrooms": "float",
-    "is_share_ownership": "float",
-    "is_retirement": "float",
-    "chain_free": "float",
-}
+INPUT_SCHEMA = Schema(
+    [
+        ColSpec("float", "floor_m_sqrt"),
+        ColSpec("boolean", "garden"),
+        ColSpec("boolean", "parking"),
+        ColSpec("boolean", "balcony_terrace"),
+        ColSpec("boolean", "furnished"),
+        ColSpec("integer", "num_rooms"),
+        ColSpec("boolean", "is_auction"),
+        ColSpec("integer", "num_living_rooms"),
+        ColSpec("integer", "num_bathrooms"),
+        ColSpec("integer", "num_bedrooms"),
+        ColSpec("boolean", "is_share_ownership"),
+        ColSpec("boolean", "is_retirement"),
+        ColSpec("boolean", "chain_free"),
+    ]
+)
 
-OUTPUT_SCHEMA = {"price": "float"}
+OUTPUT_SCHEMA = Schema([ColSpec("float", "price")])
 
 TARGET_FEATURE = ["price"]
 

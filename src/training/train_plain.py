@@ -4,7 +4,7 @@ from typing import List, Tuple, Union
 import mlflow
 import pandas as pd
 from mlflow import MlflowClient
-from mlflow.models import infer_signature
+from mlflow.models import ModelSignature
 from mlflow.pyfunc import PythonModel
 from pandas import DataFrame
 from sklearn.metrics import mean_squared_error
@@ -17,7 +17,9 @@ from src.utils.train_utils import compare_models, get_production_model
 from src.utils.utils import (
     FEATURES_TO_FLOAT,
     INPUT_FEATURES,
+    INPUT_SCHEMA,
     MLFLOW_CONFIG,
+    OUTPUT_SCHEMA,
     TARGET_FEATURE,
     TRAIN_TEST_SPLIT,
     TRAIN_VAL_SPLIT,
@@ -98,30 +100,37 @@ class TrainingManagerPlain(TrainingBase):  # pylint: disable=too-few-public-meth
 
         params = self.model.fit(x_train=x_train, y_train=y_train, params=params)
 
-        signature = infer_signature(
-            model_input=x_train,
-            model_output=self.model.predict(model_input=x_train, context={}),
-        )
+        signature = ModelSignature(inputs=INPUT_SCHEMA, outputs=OUTPUT_SCHEMA)
 
         self.model.model_info = mlflow.pyfunc.log_model(
-            sk_model=self.model,
+            artifact_path=params["model"],
+            python_model=self.model.__class__,
             registered_model_name=params["model"],
-            artifact_path=params["artifact_path"],
             signature=signature,
+            input_example=x_train,
         )
 
         client = MlflowClient()
 
-        model_version = client.get_latest_versions(params["model"], stages=["None"])
+        stages_list = ["None", "Production", "Staging", "Archived"]
+
+        model_version = client.get_latest_versions(params["model"], stages=stages_list)
 
         if len(model_version) > 0:
-            version = model_version[0].version
+            version = 0
+            for stage in model_version:
+                try:
+                    stage_version = int(stage.version)
+                    if stage_version > version:
+                        version = stage_version
+                except TypeError:
+                    print(f"Version not available for stage {stage.name}")
         else:
-            version = 1
+            version = 0
 
         model_version = client.transition_model_version_stage(
             name=params["model"],
-            version=version,
+            version=str(version),
             stage="staging",
             archive_existing_versions=True,
         )
@@ -139,7 +148,7 @@ class TrainingManagerPlain(TrainingBase):  # pylint: disable=too-few-public-meth
         :param x_val: the data to predict the validation results
         :param y_val: the true values to compare
         """
-        y_pred = self.model.predict(x_val)
+        y_pred = self.model.predict(context=None, model_input=x_val)
         rmse = mean_squared_error(y_true=y_val, y_pred=y_pred, squared=False)
         correlation = compute_correlation(y_val, y_pred)
 
@@ -207,7 +216,7 @@ class TrainingManagerPlain(TrainingBase):  # pylint: disable=too-few-public-meth
             return
 
         rmse_staging, rmse_prod = compare_models(
-            new_model=self.model.model,
+            new_model=self.model,
             old_model=model_prod,
             x_test=x_test,
             y_test=y_test,

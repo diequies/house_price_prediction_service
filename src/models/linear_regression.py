@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional
 
 import pandas as pd
 from mlflow.models.model import ModelInfo
-from pandas import DataFrame
+from pandas import DataFrame, Series
 from sklearn.linear_model import LinearRegression
 
 from src.training.interfaces import PredictorBase
@@ -46,7 +46,7 @@ class LinearRegressionPredictor(PredictorBase):
 
     def predict(
         self, context, model_input: DataFrame, params: Optional[Dict[str, Any]] = None
-    ) -> List:
+    ) -> Series:
         """
         Method to predict house prices using the linear regression model
         :param context: A :class:`~PythonModelContext` instance containing artifacts
@@ -63,7 +63,7 @@ class LinearRegressionPredictor(PredictorBase):
                 )
 
         y_predict = list(self.model.predict(X=model_input))
-        return pd.Series(y_predict).tolist()
+        return pd.Series(y_predict)
 
     @property
     def model_info(self) -> ModelInfo:
